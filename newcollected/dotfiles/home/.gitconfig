@@ -1,0 +1,61 @@
+[user]
+  name = Andrii Gladkyi
+  email = arg@arg.zone
+  signingkey = 1BEB7ADE8931AB17
+
+[color]
+  ui = true
+
+[core]
+  editor = nvim
+  autocrlf = input
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
+
+[fetch]
+  prune = true
+
+[pull]
+  rebase = true
+
+[push]
+  default = simple
+  autoSetupRemote = true
+
+[format]
+  pretty = %C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s - %C(green)%cr%C(reset), %C(blue)%an%C(reset)
+  graph = true
+
+[status]
+  branch = true
+
+[github]
+  user = arg
+
+[help]
+  autocorrect = 40
+
+[commit]
+  gpgsign = true
+
+[tag]
+  gpgsign = true
+
+[alias]
+  commend = commit --amend --no-edit
+  please = push --force-with-lease
+  first = rev-list --max-parents=0 HEAD
+  sweep = "!git branch -v | grep '\\[gone\\]' | awk '{print $1}' | xargs -n 1 git branch -D"
+  new = checkout -b
+  sync = pull --rebase origin master
+  cu = "!git add -u && git commit"
+  cp = cherry-pick -x
+  ca = "!git add -A && git commit"
+  continue = "!if [ -f .git/CHERRY_PICK_HEAD ]; then git cherry-pick --continue; elif [ -f .git/REBASE_HEAD ]; then git rebase --continue; fi"
+  abort = "!if [ -f .git/CHERRY_PICK_HEAD ]; then git cherry-pick --abort; elif [ -f .git/REBASE_HEAD ]; then git rebase --abort; fi"
+
+[diff "rspec"]
+  xfuncname = "^[ \t]*((RSpec|describe|context|it|before|after|around|feature|scenario|background)[ \t].*)$"
+
+[init]
+  defaultBranch = master

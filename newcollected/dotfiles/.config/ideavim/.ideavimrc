@@ -1,0 +1,524 @@
+set number
+set relativenumber
+set visualbell
+set clipboard+=unnamed
+set scrolloff=10
+set ignorecase
+set smartcase
+set incsearch
+set hlsearch
+set wrapscan
+" set notimeout
+set nowrap
+set timeoutlen=5000
+
+" Leader key
+let mapleader = ','
+let maplocalleader = '<space>'
+
+"==========================
+" Plugins need to install "
+"==========================
+" - [x] ideavim
+" - [x] String Manipulation
+" - [x] Which-Key
+
+" Plugins
+set surround
+set multiple-cursors
+set which-key
+set highlightedyank
+set easymotion
+set nerdtree
+set commentary
+set argtextobj
+set exchange
+set functiontextobj
+
+let g:WhichKey_FontSize = 15
+let g:WhichKey_PrefixStyle = "bold"
+let g:WhichKey_KeyStyle = "italic"
+let g:WhichKey_ShowVimActions = "false"
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+
+nmap X <Plug>(Exchange)
+nmap Xc <Plug>(ExchangeClear)
+
+nmap <S-C-n> <Plug>NextWholeOccurrence
+xmap <S-C-n> <Plug>NextWholeOccurrence
+nmap g<C-n> <Plug>NextOccurrence
+xmap g<C-n> <Plug>NextOccurrence
+nmap <C-q> <Plug>SkipOccurrence
+xmap <C-q> <plug>SkipOccurrence
+nmap <C-x> <Plug>RemoveOccurrence
+xmap <C-x> <Plug>RemoveOccurrence
+
+" IDEAVIM config options
+set ideajoin
+set ideamarks
+set ideastatusicon=gray
+
+" Mappings
+sethandler <c-j> a:vim
+sethandler <c-k> a:vim
+
+inoremap jk <Esc>
+nmap Q <nop>
+
+nmap <leader><Tab> :tabnext<CR>
+let g:WhichKeyDesc_tab_next = "<leader><tab> Next tab"
+
+nmap <S-Tab> :tabprev<CR>
+
+nnoremap [<Space> :<CR>mzo<Esc>`z:<CR>
+let g:WhichKeyDesc_new_line_below = "[<Space> New line below"
+
+nnoremap ]<Space> :<CR>mzO<Esc>`z:<CR>
+let g:WhichKeyDesc_new_line_above = "]<Space> New line above"
+
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-k> <C-w>k
+nnoremap <C-j> <C-w>j
+nnoremap j gj
+nnoremap gj j
+nnoremap k gk
+nnoremap gk k
+nnoremap Y y$
+nnoremap n nzz
+nnoremap N Nzz
+xnoremap < <gv
+xnoremap > >gv
+
+" Escape
+inoremap <expr> <C-[> col('.') == 1 ? '<esc>' : '<esc>l'
+inoremap <expr> <esc> col('.') == 1 ? '<esc>' : '<esc>l'
+
+" By default in ideavim [w and [b go forward via camel humps i.e. [W]ords[N]ext[O]ne
+" the reverse go to the end respecting humps
+" https://youtrack.jetbrains.com/issue/VIM-874/Support-for-Smart-Keys-Use-CamelHumps-Words-in-IdeaVim-plugin
+nmap w [w
+vmap w [w
+nmap e ]w
+vmap e ]w
+nmap b [b
+vmap b [b
+nmap ge ]b
+vmap ge ]b
+
+
+" Jump around with easymotion
+nmap s <Plug>(easymotion-s)
+map <S-CR> <Action>(EditorSelectWord)
+" nmap <S-CR> <Action>(EditorUnSelectWord)
+nmap <c-z> <Action>(ToggleDistractionFreeMode)
+nmap <D-p> <Action>(SearchEverywhere)
+nmap <c-p> <Action>(GotoAction)
+nmap <D-j> <Action>(HideActiveWindow)
+nmap <C-w>w <Action>(JumpToLastWindow)
+nmap <c-w>o <Action>(HideAllWindows)
+nmap S <Action>(SurroundWith)
+vmap S <Action>(SurroundWith)
+nmap dS <Action>(Unwrap)
+map  <C-s>      <Action>(SaveAll)
+imap <C-s>      <Action>(SaveAll)
+nmap K  <Action>(ShowHoverInfo)
+nmap <Leader>A <Action>(GotoTest)
+map  <A-j> <Action>(MoveLineDown)
+imap <A-j> <Action>(MoveLineDown)
+map  <A-k> <Action>(MoveLineUp)
+imap <A-k> <Action>(MoveLineUp)
+imap <A-P> <Action>(ParameterInfo)
+" built-in navigation to navigated items works better
+nmap <c-o> <Action>(Back)
+nmap <c-i> <Action>(Forward)
+map U <C-R>
+" but preserve ideavim defaults
+nmap g<c-o> <c-o>
+nmap g<c-i> <c-i>
+
+"-------------------------------------------------------------
+" Make Marks Great Again
+"-------------------------------------------------------------
+" Mark as a global mark/
+let g:WhichKeyDesc_bookmark_menu = "<leader>b Bookmark menu"
+
+nmap <leader>bm <Action>(ToggleBookmark)
+let g:WhichKeyDesc_toggle_bookmark = "<leader>bm Toggle Bookmark"
+
+nmap ]m <Action>(GotoNextBookmark)
+let g:WhichKeyDesc_next_bookmark = "]m Next bookmark"
+
+nmap [m <Action>(GotoPreviousBookmark)
+let g:WhichKeyDesc_previous_bookmark = "[m Previous bookmark"
+
+" TODO: when execute is supported turn these into functions
+" for char in range(97, 122)  " ASCII values for 'a' to 'z'
+"   let uppercase = nr2char(char - 32)  " Convert to uppercase (ASCII 'A' is 65, 'a' is 97)
+"   execute "nnoremap m" . nr2char(char) . " m" . uppercase
+" endfor
+"
+" for char in range(97, 120)  " ASCII values for 'a' to 'x'
+"   execute "nnoremap dm" . nr2char(char) . " :delmark " . nr2char(char) . "<CR>"
+" endfor
+nnoremap ma mA
+nnoremap mb mB
+nnoremap mc mC
+nnoremap md mD
+nnoremap me mE
+nnoremap mf mG
+nnoremap mh mH
+nnoremap mi mI
+nnoremap mj mJ
+nnoremap mk mK
+nnoremap ml mL
+nnoremap mm mM
+nnoremap mn mN
+nnoremap mo mO
+nnoremap mp mP
+nnoremap mq mQ
+nnoremap mr mR
+nnoremap ms mS
+nnoremap mt mT
+nnoremap mu mU
+nnoremap mv mV
+nnoremap mw mW
+nnoremap mx mX
+nnoremap my mY
+nnoremap mz mZ
+
+" Delete marks
+nnoremap dma :delmark A<CR>
+nnoremap dmb :delmark B<CR>
+nnoremap dmc :delmark C<CR>
+nnoremap dmd :delmark D<CR>
+nnoremap dme :delmark E<CR>
+nnoremap dmf :delmark F<CR>
+nnoremap dmg :delmark G<CR>
+nnoremap dmh :delmark H<CR>
+nnoremap dmi :delmark I<CR>
+nnoremap dmj :delmark J<CR>
+nnoremap dmk :delmark K<CR>
+nnoremap dml :delmark L<CR>
+nnoremap dmm :delmark M<CR>
+nnoremap dmn :delmark N<CR>
+nnoremap dmo :delmark O<CR>
+nnoremap dmp :delmark P<CR>
+nnoremap dmq :delmark Q<CR>
+nnoremap dmr :delmark R<CR>
+nnoremap dms :delmark S<CR>
+nnoremap dmt :delmark T<CR>
+nnoremap dmu :delmark U<CR>
+nnoremap dmv :delmark V<CR>
+nnoremap dmw :delmark W<CR>
+nnoremap dmx :delmark X<CR>
+
+" Go to global marks
+nnoremap 'a `A
+nnoremap 'b `B
+nnoremap 'c `C
+nnoremap 'd `D
+nnoremap 'e `E
+nnoremap 'f `G
+nnoremap 'h `H
+nnoremap 'i `I
+nnoremap 'j `J
+nnoremap 'k `K
+nnoremap 'l `L
+nnoremap 'm `M
+nnoremap 'n `N
+nnoremap 'o `O
+nnoremap 'p `P
+nnoremap 'q `Q
+nnoremap 'r `R
+nnoremap 's `S
+nnoremap 't `T
+nnoremap 'u `U
+nnoremap 'v `V
+nnoremap 'w `W
+nnoremap 'x `X
+"-------------------------------------------------------------
+
+" Switch between alternate buffers
+nnoremap <leader><leader> :b#<CR>
+let g:WhichKeyDesc_alternate_file = "<leader><leader> Alternate file"
+
+nmap <leader>sv <Action>(IdeaVim.ReloadVimRc.reload)
+let g:WhichKeyDesc_source_vimrc = "<leader>sv Source vimrc"
+
+nnoremap <leader>ev :e ~/.ideavimrc<CR>
+let g:WhichKeyDesc_edit_vimrc = "<leader>ev Edit vimrc"
+
+nnoremap <space>l    :nohlsearch<CR>
+let g:WhichKeyDesc_redraw = "<Space>l Clear search highlights"
+
+" Distraction Free Mode
+nmap <c-z> <Action>(ToggleDistractionFreeMode)
+
+" {{{ String manipulation
+" Plugin: String Manipulation
+" Settigns: Do not add selection
+vmap zrc <Action>(StringManipulation.ToCamelCase)
+vmap zrp <Action>(StringManipulation.ToPascalCase)
+vmap zrk <Action>(StringManipulation.ToKebabCase)
+vmap zrs <Action>(StringManipulation.ToSnakeCase)
+vmap zrS <Action>(StringManipulation.ToCapitalizedSnakeCase)
+" }}}
+
+" {{{ Git
+let g:WhichKeyDesc_git_groups = "<Space>gg VCS groups"
+map <space>gg <Action>(VcsGroups)
+
+let g:WhichKeyDesc_git_pull = "<Space>gl Git pull"
+map <space>gl <Action>(Git.Pull)
+
+let g:WhichKeyDesc_git_push = "<Space>gp Git push"
+map <space>gp <Action>(Vcs.Push)
+
+let g:WhichKeyDesc_git_stash = "<Space>gl Git stash"
+map <space>gz <Action>(Git.Stash)
+
+nmap <space>gc <Action>(ActivateCommitToolWindow)
+let g:WhichKeyDesc_git_commit = "<Space>gc Git commit"
+
+nmap <space>gs <Action>(ActivateVersionControlToolWindow)
+let g:WhichKeyDesc_git_status = "<Space>gs Git status/stash"
+
+nmap <space>gb <Action>(Git.Branches)
+let g:WhichKeyDesc_git_branches = "<Space>gb Git branches"
+" }}}
+
+" Terminal
+nmap <c-\> <Action>(ActivateTerminalToolWindow)
+
+nmap <leader>t <Action>(Terminal.OpenInTerminal)
+let g:WhichKeyDesc_terminal = "<leader>t Open terminal"
+
+" Folding
+nmap <leader>zc <Action>(CollapseAllRegions)
+let g:WhichKeyDesc_fold_collapse = "<leader>zc Collapse all regions"
+
+nmap <leader>zo <Action>(ExpandAllRegions)
+let g:WhichKeyDesc_fold_expand = "<leader>zo Expand all regions"
+
+nmap <Leader>q <Action>(CloseContent)
+let g:WhichKeyDesc_quit = "<leader>q Close content"
+
+nmap <Leader>qa <Action>(CloseAllEditors)
+let g:WhichKeyDesc_quit_all = "<leader>qa Close all editors"
+
+nmap <leader>s  <Action>(SaveAll)
+let g:WhichKeyDesc_save_all = "<leader>s Save all"
+
+nmap <leader>on <Action>(CloseAllEditorsButActive)
+let g:WhichKeyDesc_close_all_but = "<leader>on close all but this"
+
+nmap <leader>ff <Action>(GotoFile)
+let g:WhichKeyDesc_find_go_to_file = "<leader>ff Go to file"
+
+nmap <leader>fo <Action>(RecentFiles)
+let g:WhichKeyDesc_find_recent = "<leader>fo Recent files"
+
+nmap <leader>fs <Action>(TextSearchAction)
+let g:WhichKeyDesc_find_search = "<leader>fs Text search"
+
+nmap <leader>fp <Action>(FindInPath)
+let g:WhichKeyDesc_find_in_path = "<leader>fp Find in path"
+
+nmap <leader>fl <Action>(RecentLocations)
+let g:WhichKeyDesc_recent_locations = "<leader>fl recent locations"
+
+nmap <leader>A <Action>(GotoTest)
+let g:WhichKeyDesc_test = "<leader>A Go to test file"
+
+nmap <leader>mv <Action>(Move)
+xmap <leader>mv <Action>(Move)
+let g:WhichKeyDesc_move = "<leader>mv Move"
+
+nmap gr <Action>(ShowUsages)
+let g:WhichKeyDesc_show_usages = "gr Show usages"
+
+nmap gR <Action>(FindUsages)
+let g:WhichKeyDesc_go_usages = "gR Find usages"
+
+nmap gd <Action>(GotoDeclaration)
+let g:WhichKeyDesc_go_declaration = "gd Go to declaration"
+
+nmap gD <Action>(QuickImplementations)
+let g:WhichKeyDesc_go_quick_impl = "gD Quick implementations"
+
+nmap gy <Action>(GotoTypeDeclaration)
+let g:WhichKeyDesc_go_type = "gy Go to type"
+
+nmap gi <Action>(GotoImplementation)
+let g:WhichKeyDesc_go_implementation = "gi Go to implementation"
+
+nmap gh <Action>(ShowErrorDescription)
+let g:WhichKeyDesc_go_error_description = "gh Show error description"
+
+nmap <leader>oi <Action>(OptimizeImports)
+let g:WhichKeyDesc_go_implementation = "<leader>oi Optimise imports"
+
+nmap <leader>rn <Action>(RenameElement)
+let g:WhichKeyDesc_refactors_rename = "<leader>rn Rename element"
+
+xmap <leader>rf <Action>(ReformatCode)
+nmap <leader>rf <Action>(ReformatCode)
+let g:WhichKeyDesc_refactors_reformat_code = "<leader>rf Reformat code"
+
+nmap <leader>rv <Action>(IntroduceVariable)
+xmap <leader>rv <Action>(IntroduceVariable)
+let g:WhichKeyDesc_extract_variable = "<leader>rv Extract variable"
+
+nmap <leader>rm <Action>(ExtractFunction)
+xmap <leader>rm <Action>(ExtractFunction)
+let g:WhichKeyDesc_extract_function = "<leader>rm Extract method"
+
+xmap <leader>ca <Action>(Refactorings.QuickListPopupAction)
+nmap <leader>ca <Action>(Refactorings.QuickListPopupAction)
+let g:WhichKeyDesc_code_actions = "<leader>ca Code actions"
+
+nmap <leader>a  <Action>(ShowIntentionActions)
+xmap <leader>a  <Action>(ShowIntentionActions)
+let g:WhichKeyDesc_actions = "<leader>a Show intentions"
+
+nmap gS   <Action>(EditorSplitLine)
+let g:WhichKeyDesc_go_split = "gS Split line"
+
+nmap gJ   <Action>(EditorJoinLinesNext)
+let g:WhichKeyDesc_go_join = "gJ Join lines"
+
+nmap ]] <Action>(MethodDown)
+let g:WhichKeyDesc_next_method = "]] Next Method"
+
+nmap [[ <Action>(MethodUp)
+let g:WhichKeyDesc_prev_method = "[[ Previous Method"
+
+nmap ]c <Action>(NextOccurence)
+let g:WhichKeyDesc_next_occurence = "]c Next occurence"
+
+nmap [c <Action>(PreviousOccurence)
+let g:WhichKeyDesc_prev_occurence = "[c Previous occurence"
+
+nmap ]d <Action>(GotoNextError)
+let g:WhichKeyDesc_next_error = "]d Next error"
+
+nmap [d <Action>(GotoPreviousError)
+let g:WhichKeyDesc_prev_error = "[d Previous error"
+
+nmap <leader>ls <Action>(ActivateProblemsViewToolWindow)
+let g:WhichKeyDesc_problem_window = "<leader>ls Open Problems"
+
+nmap <leader>lb <Action>(ActivateBuildToolWindow)
+let g:WhichKeyDesc_build_window = "<leader>lb Open Build"
+
+nmap <leader>lo <Action>(FileStructurePopup)
+let g:WhichKeyDesc_file_outline_window = "<leader>lo File Outline"
+
+nmap <c-w>= <Action>(Unsplit)
+let g:WhichKeyDesc_only = "<C-w>= Show only the current window"
+
+nmap <leader>zf <Action>(MaximizeEditorInSplit)
+let g:WhichKeyDesc_zoom_file = "<leader>zf Zoom file"
+
+" File Explorer
+nmap <C-N> :NERDTreeToggle<CR>
+let g:NERDTreeMapQuit = '<C-N>'
+
+" Git
+nmap [h <Action>(VcsShowNextChangeMarker)
+let g:WhichKeyDesc_next_change = "[h Next change"
+
+nmap ]h <Action>(VcsShowPrevChangeMarker)
+let g:WhichKeyDesc_prev_change = "]h Previous change"
+
+let g:WhichKeyDesc_git_history = "<leader>h Git history menu"
+
+map <leader>hr  <Action>(Vcs.RollbackChangedLines)
+let g:WhichKeyDesc_git_rollback = "<leader>hr Rollback lines"
+
+map <leader>hb  <Action>(GitToolBox.BlameDetails)
+let g:WhichKeyDesc_git_blame = "<leader>hb Git blame"
+
+map <leader>hn <Action>(Diff.NextChange)
+let g:WhichKeyDesc_next_change_file = "<leader>hn Next change"
+
+map <leader>hp <Action>(Diff.PrevChange)
+let g:WhichKeyDesc_prev_change_file = "<leader>hp Previous change"
+
+"-------------------------------------------------------------
+" Android Studio Specific
+"-------------------------------------------------------------
+if &ide =~? 'Android Studio'
+    nmap <leader>ll <Action>(ActivateLogcatToolWindow)
+    let g:WhichKeyDesc_android_action = "<leader>ll Open Logcat"
+
+    nmap <leader>ld <Action>(ActivateRunningDevicesToolWindow)
+    let g:WhichKeyDesc_android_running_devices = "<leader>ld Open Running Devices"
+
+    nmap <leader>la <Action>(android.deploy.CodeSwap)
+    let g:WhichKeyDesc_android_code_changes = "<leader>la Apply Code Changes"
+
+    nmap <leader>la <Action>(android.deploy.CodeSwap)
+    let g:WhichKeyDesc_android_code_changes = "<leader>la Apply Code Changes"
+
+    nmap <leader>li <Action>(ActivateAppInspectionToolWindow)
+    let g:WhichKeyDesc_app_inspection = "<leader>li Open App Inspections"
+
+    nmap <leader>lq <Action>(ActivateAppQualityInsightsToolWindow)
+    let g:WhichKeyDesc_app_quality = "<leader>lq Open App Quality Insights"
+
+    nmap <leader>lA <Action>(android.deploy.ApplyChanges)
+    let g:WhichKeyDesc_android_code_restart = "<leader>lA Apply Code Changes & Restart"
+elseif &ide =~? 'IntelliJ IDEA'
+    nmap <leader>ld <Action>(ActivateCloudDesktopToolWindow)
+else
+    nmap <leader>ld <Action>(ActivateDebugToolWindow)
+endif
+"-------------------------------------------------------------
+
+" WhichKey configuration
+let g:WhichKey_FontSize = 15
+let g:WhichKey_PrefixStyle = "bold"
+let g:WhichKey_KeyStyle = "italic"
+let g:WhichKey_ShowVimActions = "false"
+let g:WhichKey_SortOrder = "by_key_prefix_first"
+let g:WhichKey_DefaultDelay = 600
+
+" Leader prefix menu
+let g:WhichKeyDesc_leader = "<leader> Leader menu"
+
+" Git menu
+let g:WhichKeyDesc_git = "<Space>g Git menu"
+
+" L mappings menu
+let g:WhichKeyDesc_list_actions = "<leader>l List menu"
+
+" M mappings
+let g:WhichKeyDesc_menu_actions = "<leader>m Move menu"
+
+" O mappings
+let g:WhichKeyDesc_open_close_actions = "<leader>o Open/Close menu"
+
+let g:WhichKeyDesc_window_motions = "<C-W> Window motions"
+
+" Find/Search submenu
+let g:WhichKeyDesc_find = "<leader>f Find menu"
+
+" Refactor submenu
+let g:WhichKeyDesc_refactors = "<leader>r Refactors menu"
+
+" Actions menu
+let g:WhichKeyDesc_code_menu = "<leader>c Code menu"
+
+" Folding submenu
+let g:WhichKeyDesc_fold = "<leader>z Folding menu"
+
+" Space prefix menu
+let g:WhichKeyDesc_space = "<Space> Space menu"
+
+" Tools submenu
+let g:WhichKeyDesc_tools = "<Space>t Tools menu"
+
+" g prefix menu (only for sequential keypresses)
+let g:WhichKeyDesc_go = "g Go to menu"

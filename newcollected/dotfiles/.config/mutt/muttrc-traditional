@@ -1,0 +1,19 @@
+set imap_deflate=yes
+set sort_browser_mailboxes=alpha
+
+# background compose in screen/tmux
+source "~/.config/mutt/bgedit-detect-screen-tmux.sh |"
+
+# send multipart/alternative by generating the HTML variant using pandoc
+set send_multipart_alternative=yes
+set send_multipart_alternative_filter="~/.config/mutt/markdown2html"
+
+# but avoid HTML when sending patches
+# TODO: also avoid sending HTML to some mailing lists
+send-hook . 'set send_multipart_alternative=yes'
+send-hook '~s \\[PATCH' 'set send_multipart_alternative=no'
+send-hook '~t @gnu.org' 'set send_multipart_alternative=no'
+
+# show HTML yes/no in compose_format and toggle on H
+send2-hook . 'set compose_format="-- Mutt: Compose  [Approx. msg size: %l   Atts: %a   HTML: $send_multipart_alternative]%>-"'
+macro compose H "<enter-command>set invsend_multipart_alternative<enter><edit-subject><enter>"

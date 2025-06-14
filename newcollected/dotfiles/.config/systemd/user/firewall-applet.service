@@ -1,0 +1,10 @@
+[Unit]
+Description=firewall-applet
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/firewall-applet
+Restart=always
+
+[Install]
+WantedBy=graphical-session.target

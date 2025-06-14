@@ -1,0 +1,26 @@
+#!/bin/sh
+# Increase battery effiency, by lowering CPU frequency
+
+# Check permissions
+if [ $(whoami) = "root" ]; then
+	root=""
+elif [ $(which doas) ]; then
+	root="doas"
+else
+	root="sudo"
+fi
+
+printf "\nDecreasing CPU performance! \n\n"
+#
+# Apply undervolt
+echo "Starting intel-undervolt"
+$root rc-service intel-undervolt-loop start  >/dev/null 2>&1
+$root intel-undervolt apply >/dev/null 2>&1
+
+# Set CPU governor to powersave
+echo "Setting CPU governor to powersave"
+$root cpupower -c all set -b 15
+$root cpupower frequency-set -g powersave >/dev/null 2>&1
+
+# Set fan speed to auto
+echo "level auto" | $root tee /proc/acpi/ibm/fan

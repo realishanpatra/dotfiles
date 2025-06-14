@@ -1,0 +1,235 @@
+# Prefix commands with GIT_TRACE=1 to debug performance.
+# Prefix commands with GIT_SSH_COMMAND='ssh -vv' to debug ssh.
+
+[user]
+    email = seth@eseth.com
+    name = Seth House
+
+[push]
+    default = current
+
+[alias]
+    b = branch -vv --sort=-committerdate
+    ca = commit --amend --no-edit
+    cm = commit --amend -o
+    ci = commit
+    co = checkout
+    d = diff --summary --stat --patch
+    ds = d --cached
+    f = fetch --tags --all
+    ff = merge --ff-only
+    m = merge --no-ff
+    mt = mergetool
+    p = push
+    pushnoci = push -o ci.skip
+    r = rebase --autosquash
+    ri = r -i --keep-base
+    rh = reset --hard
+    short = rev-parse --short
+    ref = rev-parse --symbolic-full-name
+    st = status -s -b
+    sti = status -s -b --ignored
+    stu = status -s -b --untracked
+    stat = diff --stat
+    sl = stash list --name-status --pretty='format:%gd [%ar]: %s'
+    uncommit = reset HEAD~1
+    lasttag = describe --abbrev=0
+
+    # Show as much information about a commit(s) as possible. For merge
+    # commits: Add -m to see diff for the whole merge; Omit -m to see diff for
+    # only conflict resolutions.
+    sh = show --summary --stat --pretty=fuller --patch
+    shls = diff-tree -r --no-commit-id --name-only
+
+    editc = quickfix
+    editm = quickfix -m modified
+    edits = quickfix -m staged
+    pg = pagediffs
+
+    l = log --pretty=relauthor
+    ll = log --stat --decorate --abbrev-commit --date=relative
+    lll = log -p --stat --decorate --color-moved --pretty=fuller
+    lt = l --topo-order
+
+    rl = reflog --date=relative --pretty=relauthor
+    rll = reflog --date=relative --stat --decorate --abbrev-commit
+    rlll = reflog --date=relative -p --stat --decorate --color-moved --pretty=fuller
+
+    # Show the Git log and automatically shorten & search for a SHA:
+    #   git lf deb8dff8d8c1ed8acb7d7a2ec1158e7db136aab3
+    lf = "!_() { GIT_PAGER=\"$PAGER -p $(git short $1)\" git l; };_"
+    ltf = "!_() { GIT_PAGER=\"$PAGER -p $(git short $1)\" git lt; };_"
+
+    # Output alias definitions. Usage: git which st
+    which = "!_() { git config --global --get alias.$1; };_"
+
+    # Output only the commit message of a commit.
+    message = "!_() { git log --format='%B' -1 \"${1:-@}\"; };_"
+
+    # Show merged branches as machine parsable list.
+    #   git merged; git merged origin/master
+    merged = "!_() { git branch --merged=\"${1:-@}\" \
+        | awk '!/\\*|master|main|develop/ { print $1 }'; };_"
+
+    # Output all the changes since the most recent tag as a Markdown list:
+    # git changelog
+    # git changelog HEAD~5...
+    changelog = "!_() { \
+        range=${1:-$(git lasttag)...HEAD}; \
+        printf '\nChanges since %s\n\n' $range; \
+        git --no-pager log --reverse --no-merges --oneline \
+            --pretty=format:'- %s' \
+            $range; \
+        printf '\n'; \
+    };_"
+
+    # Generate a full changelog in Markdown format from messages in each tag.
+    # Restrict output to specific tags with: -l tag1 tag2 tag3
+    fullchangelog = "!_() { \
+        printf '# CHANGELOG\n\n'; \
+        git tag \"$@\" \
+            --sort='-*committerdate' \
+            --format='## %(refname:short)%0a%0a%(*committerdate:iso)%0a%0a%(contents:body)'; \
+    };_"
+
+    # Cherry-pick a commit into the working directory as unstaged changes.
+    cherry-patch = "!_() { git show \"${1:?Missing revision}\" | git apply; };_"
+
+    # Use a fuzzy-finder to find a SHA to use for a fixup commit.
+    fixup = !git l @{u}.. | fzy | awk '{ print $1 }' | xargs -I{} git ci --fixup={}
+
+    # Output the hidden, initial SHA for a respository.
+    initialsha = !printf '' | git hash-object --stdin -t tree
+
+    # Perform a merge in-memory and output if conflicts are found (dry-run):
+    #   git mergetest targetbranch
+    #   git mergetest targetbranch intobranch
+    mergetest = "!_() { \
+        target=\"${1:?Missing target branch}\"; \
+        into=\"${2:-HEAD}\"; \
+        git merge-tree \
+            $(git merge-base \"$target\" \"$into\") \
+            \"$target\" \"$into\" \
+        | awk '/<<<<<<</ { exit 1 }'; \
+    }; _"
+
+    # Fuzzy-find any Git ranges in the tmux scrollback then re-output as an
+    # in-progress git log command.
+    # Usage: git fetch && git frefs
+    frefs = "!scrollback | match-git-range | uniq | fzy | tr -d \\\\n \
+        | xargs -I{} tmux send git Space l Space {} Space"
+
+    # http://tbaggery.com/2011/08/08/effortless-ctags-with-git.html
+    ctags = !.git/hooks/ctags
+
+    # Alias to make an archive with a prefix set to the name of the repo.
+    #   git tar <ref> (default HEAD)
+    tar = "!_() { \
+        REF=\"${1:-HEAD}\"; \
+        DIR=\"$(basename $(git rev-parse --show-toplevel))\"; \
+        TAG=\"$(git describe --always \"$REF\")\"; \
+        git archive --prefix=\"$DIR\"/ -o \"${DIR}-${TAG}.tar.gz\" \"$REF\"; \
+    };_"
+
+    # Merge a GitHub pull request into the current branch.
+    # Usage: git preq <preq>
+    # Usage: git preq <preq> [<remote>]
+    preq = "!_() { git pull --no-ff ${2:-origin} refs/pull/${1:?Missing preq}/head; };_"
+    # Same thing but for GitLab:
+    mreq = "!_() { git pull --no-ff ${2:-origin} refs/merge-requests/${1:?Missing preq}/head; };_"
+
+    # Make a local branch from a remote branch somewhere on GitHub.
+    # Usage git ghbranch username reponame remotebranchname localbranchname
+    ghbranch = "!_() { \
+        git fetch git@github.com:${1:?Missing user}/ \
+        ${2:?Missing repo}.git \
+        ${3:?Missing remote branch}:${4:?Missing local branch}; \
+    };_"
+
+    # Configure local clone to also make local refs for all GitHub pull
+    # requests for the specified remote
+    # Usage: git addprrefs upstream; git fetch upstream; git show upstream/pr/13
+    addprrefs = "!_() { git config --add remote.${1:?Missing remote}.fetch \
+        \"+refs/pull/*/head:refs/remotes/${1}/pr/*\"; \
+    };_"
+
+    # WIP Open difftool but like git show.
+    showtool = "!_() { \
+        set -x; \
+        rev=$(git rev-parse \"${1:-HEAD}\"); \
+        parents=$(git rev-list --no-walk --count --merges $rev); \
+        if [ $parents -gt 0 ]; then \
+            git diff-tree --cc $rev; \
+        else \
+            git difftool $rev~1 $rev; \
+        fi; \
+    };_"
+
+[commit]
+    verbose = 2
+    cleanup = scissors
+
+[core]
+    excludesfile = ~/.gitexcludesfile
+
+[color]
+    ui = auto
+
+[pretty]
+    # a0350b8af2 (HEAD -> foo, origin/foo) Important thing (shouse, 5 day.. shouse, 23 ho..) rebase (finish): returning to ...
+    relauthor = %C(auto)%h%d%C(reset) %s %C(bold blue)(%aL, %<(7,trunc)%ar";"%C(cyan) %cL, %<(7,trunc)%cr)%C(reset) %gs
+
+[init]
+    templatedir = ~/.git_template
+
+[pager]
+    # Don't paginate the oneline log output if less than one page.
+    l = $PAGER -F
+    lt = $PAGER -F
+    b = $PAGER -F
+    branch = $PAGER -F
+    sl = $PAGER -F
+    stat = $PAGER -F
+    rl = $PAGER -F
+    status = $PAGER -F
+
+    # Custom git scripts in $HOME/bin
+    sizes = $PAGER -F
+    attic = $PAGER -F
+    summary = $PAGER -F
+
+[blame]
+    ignoreRevsFile = .git-blame-ignore-revs
+
+[merge]
+    tool = diffconflicts
+
+[mergetool]
+    keepBackup = false
+
+[mergetool "vimdiff1"]
+    hideResolved = true
+
+[mergetool "diffconflicts"]
+    cmd = vim -c DiffConflicts \"$MERGED\" \"$BASE\" \"$LOCAL\" \"$REMOTE\"
+    trustExitCode = true
+    hideResolved = false
+
+[diff]
+    tool = vimdiff
+    colorMoved = true
+
+# If Git::LoadCPAN is not packaged for your distro:
+# export PERL5LIB=/path/to/git/clone/perl
+# [sendemail]
+#     smtpencryption = tls
+#     smtpserver = server
+#     smtpuser = user
+#     smtpserverport = port
+
+[include]
+    path = ~/.gitemailconfig
+    path = ~/.gitconfig-customize
+
+[includeIf "gitdir:~/src/dotfiles.git"]
+    path = .gitconfig-dotfiles

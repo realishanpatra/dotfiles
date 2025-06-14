@@ -1,0 +1,27 @@
+# enable all hwdec and force vaapi (vdpau powers on nvidia dGPU)
+hwdec-codecs=all
+hwdec=vaapi
+gpu-hwdec-interop=vaapi
+
+# old school OSD GUI
+script-opts=osc-deadzonesize=0,osc-minmousemove=3
+osd-on-seek=msg-bar
+
+# youtube-dl: prefer 1080p in hwdec-able format
+ytdl-format=((bestvideo[height <=? 1080][vcodec ^= vp9] / bestvideo[height <=? 1080][vcodec ^= avc1] / bestvideo[height <=? 1080]) + bestaudio) / best[height <=? 1080][vcodec ^= vp9] / best[height <=? 1080][vcodec ^= avc1] / best[height <=? 1080] / (bestvideo + bestaudio) / best
+
+# subtitle tweaks
+sub-font-size=40
+sub-ass-force-margins=yes
+
+# other
+hr-seek=yes
+save-position-on-quit=yes
+ignore-path-in-watch-later-config=yes
+
+# A/V sync
+interpolation=yes
+video-sync=display-resample
+
+[loudnorm]
+af=acompressor=ratio=6:attack=40:release=3000,loudnorm=I=-18

@@ -1,0 +1,9 @@
+[Unit]
+Description=liskin-media mpris-daemon
+
+[Service]
+ExecStart=%h/bin/liskin-media mpris-daemon
+Restart=always
+
+[Install]
+WantedBy=default.target

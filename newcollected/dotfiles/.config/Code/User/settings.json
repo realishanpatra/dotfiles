@@ -1,0 +1,47 @@
+{
+    "workbench.colorTheme": "Nord",
+    "terminal.explorerKind": "external",
+    "terminal.external.osxExec": "Alacritty.app",
+    "terminal.external.linuxExec": "foot",
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "editor.wordWrap": "on",
+    "window.restoreFullscreen": true,
+    "window.nativeTabs": true,
+    "editor.fontFamily": "'Fira Code', monospace",
+    "workbench.commandPalette.preserveInput": true,
+    "workbench.startupEditor": "readme",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "[rust]": {
+
+    },
+    "rust-analyzer.typing.autoClosingAngleBrackets.enable": true,
+    "editor.bracketPairColorization.enabled": false,
+    "rust-analyzer.inlayHints.closingBraceHints.enable": false,
+    "rust-analyzer.inlayHints.closureReturnTypeHints.enable": "always",
+    "editor.inlayHints.enabled": "offUnlessPressed",
+    "editor.inlayHints.padding": true,
+    "window.commandCenter": false,
+    "window.customTitleBarVisibility": "never",
+    "files.autoSave": "afterDelay",
+    "editor.semanticTokenColorCustomizations": {
+        "[Nord]": {
+            "enabled": true,
+            "rules": {
+                "attribute": "#5E81AC",
+                "attributeBracket": "#5E81AC",
+                "const": "#8FBCBB",
+                "decorator": "#5E81AC",
+                "derive": "#8FBCBB",
+                "enum": "#8FBCBB",
+                "enumMember": "#8FBCBB",
+                "interface": "#8FBCBB",
+                "namespace": "#81A1C1",
+                "struct": "#8FBCBB",
+                "typeParameter": "#8FBCBB",
+        }
+    },
+    // "git.defaultCloneDirectory": "${env:HOME}/dev"
+}

@@ -1,0 +1,44 @@
+#!/usr/bin/sh
+#
+# A hook script to verify what is about to be committed.
+# Called by "git push" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+
+set -eu
+
+against="${1:-HEAD}"
+
+# Redirect output to stderr.
+exec 1>&2
+
+# Get list of staged files
+stagedFiles() {
+  git diff -z --name-only --diff-filter=AM --cached "$against" --
+}
+
+# no TODO or FIXME comments.
+! stagedFiles | xargs -0r grep 'FIXME\|TODO'
+
+# Overly complex lines.  12 levels of indentation in new code
+! stagedFiles | \
+  grep -zZE '\.([jt]s|java|sh|css|go|py)$' | \  # source code only
+  grep -zZEV '\.(config|data)\.[tj]s' | \  # skip config and data files
+  args -0rz git diff --diff-filter=AM -U0 --cached "$against" -- | \ # line diff
+  grep -E '^\+ {24}' # 12 levels of 2 space indentation
+
+# editorconfig-check
+stagedFiles | xargs -0r ec
+
+# build pre-push check
+if [ -f yarn.lock ] && grep -sq pre-push package.json; then
+  yarn pre-push
+elif [ -f package-lock.json ] && grep -sq pre-push package.json; then
+  npm run pre-push
+fi
+
+# TODO:
+# Configuration: allow TODOs, skip editorconfig, skip other steps
+# List your PR reviews (don't show errors), with command to open in browser
+# List tickets assigned to you.
+# Share code with pre-commit

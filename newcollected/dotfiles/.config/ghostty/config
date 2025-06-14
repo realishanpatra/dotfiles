@@ -1,0 +1,66 @@
+#----------------------------------
+# DISPLAY
+#----------------------------------
+adjust-underline-position = 6
+adjust-underline-thickness = 2
+bold-is-bright = true
+confirm-close-surface = false
+config-file = "?local"
+#----------------------------------
+# Theme
+#----------------------------------
+theme = "github-dark-high-contrast"
+
+#----------------------------------
+# FONTS
+#----------------------------------
+font-family = "Cartograph CF"
+font-size = 14
+font-thicken = true
+
+#----------------------------------
+# MOUSE
+#----------------------------------
+mouse-hide-while-typing = true
+
+#----------------------------------
+# WINDOW
+#----------------------------------
+macos-titlebar-style = tabs
+window-save-state = always
+#----------------------------------
+# KEYBINDINGS
+#----------------------------------
+macos-option-as-alt = left
+# RESET ALL
+keybind = clear
+#----------------------------------
+# CORE
+#----------------------------------
+keybind = super+shift+r=reload_config
+keybind = super+c=copy_to_clipboard
+keybind = super+v=paste_from_clipboard
+keybind = super+plus=increase_font_size:1
+keybind = super+equal=increase_font_size:1
+keybind = super+minus=decrease_font_size:1
+#----------------------------------
+# SPLITS
+#----------------------------------
+keybind = super+ctrl+h=goto_split:left
+keybind = super+ctrl+j=goto_split:bottom
+keybind = super+ctrl+k=goto_split:top
+keybind = super+ctrl+l=goto_split:right
+keybind = super+shift+/=new_split:auto
+#----------------------------------
+# TABS
+#----------------------------------
+keybind = super+shift+t=new_tab
+keybind = super+shift+h=previous_tab
+keybind = super+shift+l=next_tab
+keybind = super+shift+comma=move_tab:-1
+keybind = super+shift+period=move_tab:1
+#----------------------------------
+keybind = ctrl+shift+space=toggle_split_zoom
+keybind = super+w=close_surface
+
+keybind = global:super+shift+]=toggle_quick_terminal

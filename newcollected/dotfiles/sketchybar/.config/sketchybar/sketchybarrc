@@ -1,0 +1,91 @@
+# vim: ft=bash
+
+ITEM_PADDING=3
+
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+
+sketchybar --bar \
+display=main \
+color=0x99212121 \
+height=30 \
+notch_display_height=50
+
+sketchybar -m --add event window_focus \
+              --add event title_change
+
+sketchybar --default \
+label.font=Menlo:Bold:14 \
+label.padding_right=$ITEM_PADDING \
+label.padding_left=$ITEM_PADDING
+
+sketchybar --add event weather_update
+
+sketchybar --add item time right \
+           --set time script="$PLUGIN_DIR/time.sh" \
+           --set time click_script="$PLUGIN_DIR/time_clicked.sh" \
+           --set time label.color=0xffcccccc update_freq=10 \
+           --subscribe time system_woke
+
+sketchybar --add item date right \
+           --set date script="$PLUGIN_DIR/date.sh" \
+           --set date click_script="$PLUGIN_DIR/date_clicked.sh" \
+           --set date label.color=0xffc9c9c9 update_freq=600 \
+           --subscribe date system_woke
+
+sketchybar --add item battery right \
+           --set battery script="$PLUGIN_DIR/battery.sh" \
+           --subscribe battery power_source_change \
+           --set battery label.color=0xff6699cc update_freq=600 \
+           --subscribe battery system_woke
+
+sketchybar --add item weather right \
+           --set weather script="$PLUGIN_DIR/weather.sh" \
+           --set weather click_script="$PLUGIN_DIR/weather_clicked.sh" \
+           --set weather label.color=0xffffcc66 update_freq=600 \
+           --subscribe weather system_woke
+
+sketchybar --add item weather.radar popup.weather \
+           --set weather.radar script="$PLUGIN_DIR/radar.sh" \
+           --set weather.radar label.color=0xffffcc66 update_freq=600
+
+sketchybar --add item weather.details popup.weather \
+           --set weather.details script="$PLUGIN_DIR/weather_details.sh" \
+           --set weather.details updates=when_shown
+           --set weather.details label.color=0xffffcc66 update_freq=600
+
+sketchybar --add item window center \
+           --set window script="$PLUGIN_DIR/window.sh" \
+           --set window click_script="$PLUGIN_DIR/window_clicked.sh" \
+           --subscribe window window_focus title_change \
+           --set window label.color=0xffd3d0c8
+
+sketchybar --add space space1 left \
+           --set space1 associated_space=1 \
+           --set space1 script="$PLUGIN_DIR/space.sh" \
+           --set space1 click_script="$PLUGIN_DIR/space_clicked.sh" \
+           --subscribe space1 window_focus space_change \
+           --set space1 label.color=0xfff2777a \
+           --set space1 background.color=0xfff2777a \
+           --set space1 label.highlight_color=0xff212121
+
+sketchybar --clone space2 space1
+sketchybar --set space2 associated_space=2 label.color="0xff99cc99" background.color="0xff99cc99"
+sketchybar --clone space3 space1
+sketchybar --set space3 associated_space=3 label.color="0xffffcc66" background.color="0xffffcc66"
+sketchybar --clone space4 space1
+sketchybar --set space4 associated_space=4 label.color="0xff6699cc" background.color="0xff6699cc" 
+sketchybar --clone space5 space1
+sketchybar --set space5 associated_space=5 label.color="0xffcc99cc" background.color="0xffcc99cc"
+sketchybar --clone space6 space1
+sketchybar --set space6 associated_space=6 label.color="0xff66cccc" background.color="0xff66cccc"
+sketchybar --clone space7 space1
+sketchybar --set space7 associated_space=7 label.color="0xffd3d0c8" background.color="0xffd3d0c8"
+sketchybar --clone space8 space1
+sketchybar --set space8 associated_space=8 label.color="0xff99cc99" background.color="0xff99cc99"
+sketchybar --clone space9 space1
+sketchybar --set space9 associated_space=9 label.color="0xffffcc66" background.color="0xffffcc66"
+sketchybar --clone space10 space1
+sketchybar --set space10 associated_space=10 label.color="0xffff7400" background.color="0xffff7400"
+
+sketchybar --update
+

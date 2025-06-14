@@ -1,0 +1,52 @@
+#!/usr/bin/sh
+#
+# A hook script to verify what is about to be committed.
+# Called by "git commit" with no arguments.  The hook should
+# exit with non-zero status after issuing an appropriate message if
+# it wants to stop the commit.
+
+set -eu
+
+if git rev-parse --verify HEAD >/dev/null 2>&1; then
+	against="${1:-HEAD}"
+else
+	# Initial commit: diff against an empty tree object
+	against="$(git hash-object -t tree /dev/null)"
+fi
+
+has() {
+	if ! command -v "$1" >/dev/null; then
+		echo "WARN: $1 is not in path"
+		return 1
+	fi
+}
+
+# Redirect output to stderr.
+exec 1>&2
+
+stagedFiles() {
+	git diff -z --name-only --diff-filter=AM --cached "$against" --
+}
+
+# If there are whitespace or conflict errors, print the offending file names and fail.
+stagedFiles | xargs -0r git diff-index --check --cached "$against" --
+
+# editorconfig-check, but don't disallow the commit.
+if has ec; then
+	stagedFiles | xargs -0r ec || true
+fi
+
+if has gitleaks; then
+	gitleaks protect -v --staged
+fi
+
+# TODO:
+# Configuration: allow TODOs, skip editorconfig, skip other steps
+# Call <project-root>/bin/g pre-commit
+# check for parent branch name.  git config --local parent.name <branch>
+# git fetch remote branch and remote parent branch
+# Report conflicting files with remote and parent, with command to view and/or resolve
+# List commits made to parent branch
+# List your PR reviews, with command to open in browser
+# List new ticket activity since start of branch
+# Share code with pre-push

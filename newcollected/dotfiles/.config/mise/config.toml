@@ -1,0 +1,66 @@
+[settings]
+experimental = true
+not_found_auto_install = false
+paranoid = true
+pin = true
+pipx_uvx = true
+trusted_config_paths = ['~/.config/mise/config.toml']
+idiomatic_version_file_enable_tools = []
+
+[settings.status]
+missing_tools = "always"
+show_env = true
+
+[tools]
+"aqua:nextest-rs/nextest/cargo-nextest" = "0.9.96"
+"cargo:JojiiOfficial/LiveBudsCli" = "rev:4a2d75f5bede545738110dccbac033954b1d6087"
+"cargo:YodaEmbedding/frece" = "rev:d4071c6c852e68dda82b7ab0bfb0f141b39d4484"
+"cargo:cargo-audit" = "0.21.2"
+"cargo:cargo-cache" = "0.8.3"
+"cargo:cargo-edit" = "0.13.0"
+"cargo:cargo-machete" = "0.8.0"
+"cargo:cargo-semver-checks" = "0.41.0"
+"cargo:cargo-watch" = "8.5.3"
+"cargo:evcxr_repl" = "0.19.0"
+"cargo:fclones" = "0.34.0"
+"cargo:ripgrep_all" = "0.10.9"
+"cargo:tokio-console" = "0.1.13"
+"npm:@mermaid-js/mermaid-cli" = "11.4.0"
+"npm:prettier" = "3.3.3"
+"npm:typescript-language-server" = "4.3.3"
+"pipx:gdbgui" = { version = "0.15.2.0", uvx_args = "--python python3.12" }
+"pipx:git-when-merged" = "1.2.1"
+"pipx:liskin/foursquare-swarm-ical" = "172e1d0336fdab568ab6b5ed505a06daafa5078c"
+"pipx:liskin/liscopridge" = "a9c2debe41d045ef184c87bbad331ee6fa20b13c"
+"pipx:liskin/strava-gear" = "6883fefc8a8f0a2e5144f271480e406a33540417"
+"pipx:liskin/strava-offline" = "1abe986b2d1ba6a300954df6ff648d88bead6c80"
+"pipx:markdown2ctags" = "0.3.3"
+"pipx:pandoc-plantuml-filter" = "0.1.5"
+"pipx:pushl" = "0.4.0"
+"pipx:python-dxf" = "12.1.1"
+"pipx:timezonefinder" = "6.5.9"
+"ubi:ankitpokhrel/jira-cli" = { version = "1.6.0", exe = "jira" }
+"ubi:chrishrb/go-grip" = "0.5.6"
+"ubi:oz/tz" = "0.8.0"
+ast-grep = "0.38.2"
+buildifier = "8.2.0"
+cargo-binstall = "1.12.5"
+circleci = "0.1.30549"
+ctlptl = "0.8.40"
+difftastic = "0.63.0"
+dive = "0.13.1"
+gh = "2.72.0"
+hadolint = "2.12.0"
+kind = "0.27.0"
+lua-language-server = "3.13.0"
+regctl = "0.8.3"
+rust-analyzer = "2025-05-12"
+stylua = "2.1.0"
+taplo = "0.9.3"
+tilt = "0.34.3"
+usage = "2.1.1"
+uv = "0.7.5"
+watchexec = "2.3.1"
+
+[alias]
+buildifier = "ubi:bazelbuild/buildtools[exe=buildifier,matching=buildifier]"

@@ -1,0 +1,14 @@
+name: restclass
+root: ~/Development/restclass
+startup_window: editor
+windows:
+  - editor: nvim .
+  - shell:
+  - server:
+      layout: tiled
+      panes:
+        - js: yarn build --watch --minify=false
+        - css: yarn build:css --watch
+        - rails: bundle exec rails server -p 7000
+        - worker: bundle exec sidekiq
+  - fm: mc -u .

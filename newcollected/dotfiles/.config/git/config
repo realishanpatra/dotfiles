@@ -1,0 +1,19 @@
+[user]
+  # email/EMAIL, name/GIT_AUTHOR_NAME values set in ~/.zshenv
+
+[core]
+#    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only --features=interactive
+
+[delta]
+    features = Github
+    syntax-theme = Github
+
+[init]
+	templateDir = ~/.config/git/templates
+[alias]
+	sync = syncr sync
+[safe]
+	directory = /app

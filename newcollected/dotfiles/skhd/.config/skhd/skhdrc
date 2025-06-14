@@ -1,0 +1,24 @@
+# Hyper vim movement keys for focus
+shift + ctrl + alt - h : yabai -m window --focus west; aerospace focus left
+shift + ctrl + alt - l : yabai -m window --focus east; aerospace focus right
+shift + ctrl + alt - k : yabai -m window --focus north; aerospace focus up
+shift + ctrl + alt - j : yabai -m window --focus south; aerospace focus down
+
+# hyper m to focus between displays
+shift + ctrl + alt - m : yabai -m display --focus recent
+
+# hyper u / i to mirror on x and y axis
+shift + ctrl + alt - u : yabai -m space --mirror x-axis
+shift + ctrl + alt - i : yabai -m space --mirror y-axis
+
+# hyper y to rotate
+shift + ctrl + alt - y : yabai -m space --rotate 270
+
+# hyper n to move between displays
+shift + ctrl + alt - n : yabai -m window --display next
+
+# hyper p to rebalance
+shift + ctrl + alt - p : yabai -m space --balance
+
+# hyper f for fullscreen
+shift + ctrl + alt - f : yabai -m window --toggle float --grid 1:1:0:0:1:1

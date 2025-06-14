@@ -1,0 +1,12 @@
+[Unit]
+Description=every 15 minutes timer - %i
+ConditionFileIsExecutable=%h/bin/liskin-timer-%i
+
+[Timer]
+Unit=liskin-timer@%i.service
+OnCalendar=*-*-* *:00/15:00
+RandomizedDelaySec=30s
+Persistent=true
+
+[Install]
+WantedBy=timers.target

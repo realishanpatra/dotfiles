@@ -1,0 +1,25 @@
+[user]
+	name = Peter Hajas
+	email = peter@haj.as
+[core]
+	editor = nvim
+	excludesfile = /Users/phajas/.gitignore_global
+[diff]
+	tool = "nvim -d"
+[difftool]
+	prompt = false
+[mergetool]
+	prompt = false
+[merge]
+	tool = "nvim -d"
+[push]
+	default = matching
+[init]
+	templatedir = ~/.git_template
+[alias]
+	ctags = !.git/hooks/ctags
+
+    st = status
+
+    # hah!
+    checkotu = checkout

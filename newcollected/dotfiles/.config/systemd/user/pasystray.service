@@ -1,0 +1,10 @@
+[Unit]
+Description=pasystray
+PartOf=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/pasystray --notify=all
+Restart=always
+
+[Install]
+WantedBy=graphical-session.target
