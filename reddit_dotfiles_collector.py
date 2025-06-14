@@ -1,99 +1,97 @@
-import praw
 import os
 import re
-import requests
+import shutil
+import tempfile
+import praw
+import subprocess
 from git import Repo
-from urllib.parse import urlparse
 
-# === Reddit API Credentials ===
+# === CONFIG ===
 REDDIT_CLIENT_ID = 'SK_0AKF_jE_KCy7SHZbDWw'
 REDDIT_CLIENT_SECRET = 'mYZQRljR-FLu-8EVvXbtfYa4gskBIQ'
 REDDIT_USER_AGENT = 'dotfile_collector by /u/realishanpatra'
+SUBREDDITS = ['unixporn', 'dotfiles']
+NUM_POSTS = 100
+SAVE_DIR = 'newcollected'
 
-# === GitHub Repo Config ===
-REPO_URL = "https://github.com/realishanpatra/dotfiles.git"
-LOCAL_REPO_PATH = os.path.expanduser("~/my_dotfiles_repo")
-TARGET_FOLDER = os.path.join(LOCAL_REPO_PATH, "collected")
+# === Only copy these filenames or folders ===
+DOTFILE_PATTERNS = [
+    '.zshrc', '.bashrc', '.vimrc', '.xinitrc', '.Xresources', '.tmux.conf',
+    '.config', '.profile', '.aliases', '.gitconfig', '.i3', '.bspwm', '.nvim'
+]
 
-# === Subreddits and Patterns ===
-SUBREDDITS = ["unixporn", "dotfiles", "linux"]
-GITHUB_REPO_PATTERN = re.compile(r'https?://github\.com/[\w\-_]+/[\w\-_]+')
-RAW_FILE_PATTERN = re.compile(r'https?://(?:gist\.githubusercontent\.com|pastebin\.com/raw)/[\w/\-]+')
+def extract_github_links(text):
+    return re.findall(r'(https?://github\.com/[^\s/]+/[^\s/]+)', text)
 
-# === Setup Reddit ===
-reddit = praw.Reddit(
-    client_id=REDDIT_CLIENT_ID,
-    client_secret=REDDIT_CLIENT_SECRET,
-    user_agent=REDDIT_USER_AGENT
-)
+def is_dotfile(filepath):
+    for pattern in DOTFILE_PATTERNS:
+        if filepath.endswith(pattern) or pattern in filepath:
+            return True
+    return False
 
-def clone_main_repo():
-    if not os.path.exists(LOCAL_REPO_PATH):
-        print("[+] Cloning your GitHub dotfiles repo...")
-        Repo.clone_from(REPO_URL, LOCAL_REPO_PATH)
-    else:
-        print("[=] Repo already cloned.")
-    os.makedirs(TARGET_FOLDER, exist_ok=True)
-
-def download_raw_file(url, author):
+def clone_and_copy(repo_url):
     try:
-        file_name = url.split("/")[-1]
-        author_folder = os.path.join(TARGET_FOLDER, f"{author}_raw")
-        os.makedirs(author_folder, exist_ok=True)
-        file_path = os.path.join(author_folder, file_name)
+        temp_dir = tempfile.mkdtemp()
+        Repo.clone_from(repo_url, temp_dir)
 
-        print(f"[+] Downloading: {url}")
-        r = requests.get(url)
-        if r.status_code == 200:
-            with open(file_path, "w", encoding="utf-8") as f:
-                f.write(r.text)
+        repo_name = repo_url.strip('/').split('/')[-1]
+        save_path = os.path.join(SAVE_DIR, repo_name)
+        os.makedirs(save_path, exist_ok=True)
+
+        found = False
+        for root, dirs, files in os.walk(temp_dir):
+            for name in files:
+                full_path = os.path.join(root, name)
+                rel_path = os.path.relpath(full_path, temp_dir)
+
+                if is_dotfile(rel_path):
+                    if os.path.getsize(full_path) > 0:
+                        dest = os.path.join(save_path, rel_path)
+                        os.makedirs(os.path.dirname(dest), exist_ok=True)
+                        shutil.copy2(full_path, dest)
+                        print(f"📄 Copied: {rel_path}")
+                        found = True
+                    else:
+                        print(f"⚠️ Skipped empty: {rel_path}")
+        shutil.rmtree(temp_dir)
+
+        if found:
+            print(f"✅ Done with {repo_url}")
         else:
-            print(f"[-] Failed to download: {url} (HTTP {r.status_code})")
+            print(f"❌ No matching dotfiles in {repo_url}")
     except Exception as e:
-        print(f"[-] Error: {e}")
+        print(f"❌ Error cloning {repo_url}: {e}")
 
-def clone_repo(url, author):
+def main():
+    os.makedirs(SAVE_DIR, exist_ok=True)
+    reddit = praw.Reddit(
+        client_id=REDDIT_CLIENT_ID,
+        client_secret=REDDIT_CLIENT_SECRET,
+        user_agent=REDDIT_USER_AGENT
+    )
+
+    seen_links = set()
+    for subreddit in SUBREDDITS:
+        for post in reddit.subreddit(subreddit).top(limit=NUM_POSTS, time_filter='all'):
+            links = extract_github_links(post.selftext + " " + post.url)
+            for link in links:
+                if link not in seen_links:
+                    seen_links.add(link)
+                    clone_and_copy(link)
+
+    # Git auto-commit and push
     try:
-        repo_name = urlparse(url).path.strip("/").replace("/", "_")
-        repo_folder = os.path.join(TARGET_FOLDER, f"{author}_github_{repo_name}")
-        if not os.path.exists(repo_folder):
-            print(f"[+] Cloning repo: {url}")
-            Repo.clone_from(url, repo_folder)
-        else:
-            print(f"[=] Repo already exists: {repo_folder}")
-    except Exception as e:
-        print(f"[-] Git clone failed: {url} ({e})")
-
-def process_posts():
-    for sub in SUBREDDITS:
-        subreddit = reddit.subreddit(sub)
-        for post in subreddit.hot(limit=30):
-            if post.stickied:
-                continue
-            author = post.author.name if post.author else "unknown"
-            text = post.selftext + " " + post.url
-
-            for url in GITHUB_REPO_PATTERN.findall(text):
-                clone_repo(url, author)
-
-            for url in RAW_FILE_PATTERN.findall(text):
-                download_raw_file(url, author)
-
-def commit_and_push():
-    try:
-        repo = Repo(LOCAL_REPO_PATH)
-        repo.git.add(all=True)
+        repo = Repo('.')
+        repo.git.add(A=True)
         if repo.is_dirty():
-            repo.index.commit("Update collected dotfiles from Reddit")
-            origin = repo.remote(name="origin")
+            repo.index.commit("Add new collected dotfiles from Reddit")
+            origin = repo.remote(name='origin')
             origin.push()
-            print("[✓] Changes pushed to your GitHub repo.")
+            print("🚀 Changes pushed to GitHub!")
         else:
-            print("[=] No new changes to commit.")
+            print("🟰 No new changes to commit.")
     except Exception as e:
-        print(f"[-] Git commit/push failed: {e}")
+        print(f"❌ Git error: {e}")
 
-if __name__ == "__main__":
-    clone_main_repo()
-    process_posts()
-    commit_and_push()
+if __name__ == '__main__':
+    main()
